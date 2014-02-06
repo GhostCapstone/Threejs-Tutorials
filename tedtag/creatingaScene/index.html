@@ -1,0 +1,44 @@
+<html>
+	<head>
+		<title>My first Three.js app</title>
+		<style>canvas { width: 100%; height: 100% }</style>
+	</head>
+	<body>
+		<script src="https://rawgithub.com/mrdoob/three.js/master/build/three.js"></script>
+		<script>
+			// Setting the Scene
+				var scene = new THREE.Scene();
+				var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+					/*	<< Notes: THREE.PerspectiveCamera Attributes >>
+							Field of View
+							Aspect Ratio (typically use window.innerWidth / window.innerHeight)
+							Near clipping plane (minimal rendering distance)
+							Far clipping plane (maximal rendering distance)
+					*/
+
+			// Creating the renderer
+				var renderer = new THREE.WebGLRenderer();
+					renderer.setSize( window.innerWidth, window.innerHeight );	// Sets resolution
+				document.body.appendChild( renderer.domElement );	// Adds renderer to page
+			
+			// Creating objects within a scene
+				var geometry = new THREE.CubeGeometry(1,1,1);
+				var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+				var cube = new THREE.Mesh( geometry, material );
+				scene.add( cube );
+
+				camera.position.z = 5;
+				
+			// Creating a render loop
+				function render() {
+					requestAnimationFrame(render);	// Calls itself to loop scene
+					cube.rotation.x += 0.1;		// Rotates around the x-axis every frame
+					cube.rotation.y += 0.1;		// Rotates around the y-axis every frame
+					renderer.render(scene, camera);	// Renders the scene and camera
+				}
+				
+				render();	// Calls render()
+			
+		</script>
+	</body>
+</html>
