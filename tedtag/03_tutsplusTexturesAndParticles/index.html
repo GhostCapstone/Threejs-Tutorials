@@ -10,6 +10,7 @@
 				position: fixed;
 				top: 0;
 				left: 0;
+				background-color: black;
 			}
 		</style>
 
@@ -35,12 +36,12 @@
 				renderer.setSize(width, height);
 			document.body.appendChild(renderer.domElement);	// Adds renderer to page
 			
-			/* Load box.png texture */
+			/* STEP 1: Load box.png texture */
 			var cubeTexture = THREE.ImageUtils.loadTexture('img/box.png');
 			
-			/* Create new cube material with box.png texture */
+			/* STEP 2/3: Create new cube material with multiple materials and box.png texture */
 			var geometry = new THREE.CubeGeometry(100,100,100);
-			var materials = [];
+			var materials = [];	// create an array of six mesh materials, one for each cube face
 				materials.push(new THREE.MeshLambertMaterial({ map: cubeTexture, color: 0xff0000 })); // right face
 				materials.push(new THREE.MeshLambertMaterial({ map: cubeTexture, color: 0xffff00 })); // left face
 				materials.push(new THREE.MeshLambertMaterial({ map: cubeTexture, color: 0xffffff })); // top face
@@ -49,6 +50,7 @@
 				materials.push(new THREE.MeshLambertMaterial({ map: cubeTexture, color: 0xff00ff })); // back face
 			var cubeMaterial = new THREE.MeshFaceMaterial(materials);
 			var cube = new THREE.Mesh( geometry, cubeMaterial );
+			cube.rotation.x = Math.PI * 45 / 320;	// Angles the cube towards user
 			scene.add( cube );
 			
 			/* Add point light */
@@ -58,13 +60,59 @@
 			pointLight.position.z = 150;
 			scene.add(pointLight);
 
-			camera.position.z = 150;
+			camera.position.z = 250;
+			
+			/* STEP 4: Adding Particles */
+			var particleTexture = THREE.ImageUtils.loadTexture('img/snowflake.png');
+			var particles = new THREE.Geometry;
+			for (var p = 0; p < 2000; p++) {
+				var particle = new THREE.Vector3(Math.random() * 500 - 250, Math.random() * 500 - 250, Math.random() * 500 - 250);
+				particles.vertices.push(particle);
+			}
+			var particleMaterial = new THREE.ParticleBasicMaterial({ map: particleTexture, transparent: true, size: 5 });
+			var particleSystem = new THREE.ParticleSystem(particles, particleMaterial);
+			
+			scene.add(particleSystem);
+			
+			/* STEP 5: Adding smoke */
+			var smokeTexture = THREE.ImageUtils.loadTexture('img/smoke.png');
+			var smokeParticles = new THREE.Geometry;
+			for (var i = 0; i < 300; i++) {
+				var particle = new THREE.Vector3(Math.random() * 32 - 16, Math.random() * 230, Math.random() * 32 - 16);
+				smokeParticles.vertices.push(particle);
+			}
+			var smokeMaterial = new THREE.ParticleBasicMaterial({ map: smokeTexture, transparent: true, blending: THREE.AdditiveBlending, size: 50, color: 0x111111 });
+			var smoke = new THREE.ParticleSystem(smokeParticles, smokeMaterial);
+				smoke.sortParticles = true;
+				smoke.position.x = -150;
+				 
+			scene.add(smoke);
 
 			// Creating a render loop
+			var clock = new THREE.Clock;	// Starts clock for rotation
+			
 			function render() {
 				requestAnimationFrame(render);	// Calls itself to loop scene
-				cube.rotation.x += 0.005;		// Rotates around the x-axis every frame
-				cube.rotation.y += 0.005;		// Rotates around the y-axis every frame
+				
+				/* Rotate scene */
+				var delta = clock.getDelta();
+				cube.rotation.y -= delta;
+				particleSystem.rotation.y += delta;
+				
+				/* Animate Smoke */
+				var particleCount = smokeParticles.vertices.length;
+				while (particleCount--) {
+					var particle = smokeParticles.vertices[particleCount];
+					particle.y += delta * 50;
+					 
+					if (particle.y >= 230) {
+						particle.y = Math.random() * 16;
+						particle.x = Math.random() * 32 - 16;
+						particle.z = Math.random() * 32 - 16;
+					}
+				}
+				smokeParticles.__dirtyVertices = true;
+				
 				renderer.render(scene, camera);	// Renders the scene and camera
 			}
 			render();	// Calls render() 
