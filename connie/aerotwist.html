@@ -1,0 +1,65 @@
+<html>
+	<head>
+		<title>My first Three.js app</title>
+		<style>
+		/*canvas { 
+			width: 100%; 
+			height: 100% 
+		}*/
+		#container {
+				background: #000;
+				width: 400px;
+				height: 300px;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="container">
+		</div>
+	</body>
+		<script src="https://rawgithub.com/mrdoob/three.js/master/build/three.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
+		<script>
+			// Our Javascript will go here.
+			var $container = $('#container');
+
+			var HEIGHT = 400;
+			var WIDTH = 300;
+			var VIEW_ANGLE = 45;
+			var ASPECT = WIDTH / HEIGHT;
+			var NEAR = 0.1;
+			var FAR = 10000;
+			var scene = new THREE.Scene();
+			var camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR);
+
+			var renderer = new THREE.WebGLRenderer();
+			renderer.setSize(WIDTH, HEIGHT);
+			//renderer.setSize( window.innerWidth, window.innerHeight );
+			scene.add(camera);
+			camera.position.z = 300;
+
+			var sphereMaterial = new THREE.MeshLambertMaterial ({color: 0xCC0000});
+			scene.add(sphere);
+
+			$container.append(renderer.domElement);
+			var sphere = new THREE.Mesh(new THREE.SphereGeometry(50, 16, 16), sphereMaterial);
+
+			
+
+			var pointlight = new THREE.PointLight(0xFFFFFF);
+			pointlight.position.x = 10;
+			pointlight.position.y = 50;
+			pointlight.position.z = 130;
+			scene.add(pointlight);
+			
+			renderer.render(scene, camera);
+			// function render() {
+			// 	requestAnimationFrame(render);
+			// 	cube.rotation.x += 0.01;
+			// 	cube.rotation.y += 0.01;
+
+			// 	renderer.render(scene, camera);
+			// }
+			// render();
+		</script>
+</html>
