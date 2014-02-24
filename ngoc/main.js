@@ -8,16 +8,26 @@
   r.setSize(window.innerWidth, window.innerHeight);
   document.body.appendChild(r.domElement);
 
-  var geometry = new THREE.CubeGeometry(6, 1, 1);
-  var material = new THREE.MeshBasicMaterial({
-    color: 0x00FF00
-  });
-  var cube = new THREE.Mesh(geometry, material);
+  var geometry = new THREE.CubeGeometry(1, 1, 1);
+  // var material = new THREE.MeshBasicMaterial({
+  //   color: 0x00FF00
+  // });
+  var cubeTexture = THREE.ImageUtils.loadTexture('./box.jpg');
+  // var cubeMaterial = new THREE.MeshLambertMaterial({
+  //   map: cubeTexture,
+  //   color: 0x00FF00
+  // });
+	var materials = [];
+	materials.push(new THREE.MeshLambertMaterial({ map: cubeTexture, color: 0xff0000 })); //right
+	materials.push(new THREE.MeshLambertMaterial({ map: cubeTexture, color: 0xffff00 })); //left
+	materials.push(new THREE.MeshLambertMaterial({ map: cubeTexture, color: 0xffffff })); //top
+	materials.push(new THREE.MeshLambertMaterial({ map: cubeTexture, color: 0x00ffff })); //bottom
+	materials.push(new THREE.MeshLambertMaterial({ map: cubeTexture, color: 0x0000ff })); //front
+	materials.push(new THREE.MeshLambertMaterial({ map: cubeTexture, color: 0xff00ff })); //back
+	var cubeMaterial = new THREE.MeshFaceMaterial(materials);
+	var cube = new THREE.Mesh(geometry, cubeMaterial);
   scene.add(cube);
-
   camera.position.z = 5;
-
-
   render(r, scene, camera);
 
   function render() {
