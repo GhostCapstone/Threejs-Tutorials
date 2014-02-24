@@ -2,7 +2,7 @@
     'use strict';
     var width = window.innerWidth;
     var height = window.innerHeight;
-
+    var clock = new THREE.Clock;
     var renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(width,height);
     document.body.appendChild(renderer.domElement);
@@ -15,7 +15,7 @@
     var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
 
     cube.rotation.y = Math.PI * 45 / 180; // convert to radians
-
+    cube.rotation.x = Math.PI * 45 / 180;
     scene.add(cube);
 
     // add the camera
@@ -27,7 +27,7 @@
     scene.add(camera);
 
     // add a skybox
-    var skyboxGeometry = new THREE.CubeGeometry(1000, 1000, 1000);
+    var skyboxGeometry = new THREE.CubeGeometry(10000, 10000, 10000);
     var skyboxMaterial = new THREE.MeshBasicMaterial({ color: 0x000000, side: THREE.BackSide } );
     var skybox = new THREE.Mesh(skyboxGeometry, skyboxMaterial);
 
@@ -40,7 +40,16 @@
     scene.add(pointLight);
 
     // Draw it
-    renderer.render(scene, camera);
+    function render() {
+        var delta = clock.getDelta();
+        renderer.render(scene, camera);
+        
+        cube.rotation.y -= delta;
+        cube.rotation.x -= delta;
+        requestAnimationFrame(render); // callback render when next frame is ready
+    }
+    render();
+
     
 
 }) (THREE);
