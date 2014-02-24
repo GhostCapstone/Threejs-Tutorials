@@ -8,7 +8,7 @@
   r.setSize(window.innerWidth, window.innerHeight);
   document.body.appendChild(r.domElement);
 
-  var geometry = new THREE.CubeGeometry(1, 1, 1);
+  var geometry = new THREE.CubeGeometry(100, 100, 100);
   // var material = new THREE.MeshBasicMaterial({
   //   color: 0x00FF00
   // });
@@ -27,7 +27,9 @@
 	var cubeMaterial = new THREE.MeshFaceMaterial(materials);
 	var cube = new THREE.Mesh(geometry, cubeMaterial);
   scene.add(cube);
-  camera.position.z = 5;
+  camera.position.y = 160;
+  camera.position.z = 400;
+  camera.lookAt(cube.position);
   render(r, scene, camera);
 
   function render() {
