@@ -1,41 +1,50 @@
 (function(THREE) {
-  "use strict";
+  'use strict';
+  var width = window.innerWidth;
+  var height = window.innerHeight;
 
-  // var canvas = document.getElementById('canvas');
+  var renderer = new THREE.WebGLRenderer({
+    antialias: true
+  });
+  renderer.setSize(width, height);
+  document.body.appendChild(renderer.domElement);
   var scene = new THREE.Scene();
-  var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-  var r = new THREE.WebGLRenderer();
-  r.setSize(window.innerWidth, window.innerHeight);
-  document.body.appendChild(r.domElement);
 
-  var geometry = new THREE.CubeGeometry(100, 100, 100);
-  // var material = new THREE.MeshBasicMaterial({
-  //   color: 0x00FF00
-  // });
-  var cubeTexture = THREE.ImageUtils.loadTexture('./box.jpg');
-  // var cubeMaterial = new THREE.MeshLambertMaterial({
-  //   map: cubeTexture,
-  //   color: 0x00FF00
-  // });
-	var materials = [];
-	materials.push(new THREE.MeshLambertMaterial({ map: cubeTexture, color: 0xff0000 })); //right
-	materials.push(new THREE.MeshLambertMaterial({ map: cubeTexture, color: 0xffff00 })); //left
-	materials.push(new THREE.MeshLambertMaterial({ map: cubeTexture, color: 0xffffff })); //top
-	materials.push(new THREE.MeshLambertMaterial({ map: cubeTexture, color: 0x00ffff })); //bottom
-	materials.push(new THREE.MeshLambertMaterial({ map: cubeTexture, color: 0x0000ff })); //front
-	materials.push(new THREE.MeshLambertMaterial({ map: cubeTexture, color: 0xff00ff })); //back
-	var cubeMaterial = new THREE.MeshFaceMaterial(materials);
-	var cube = new THREE.Mesh(geometry, cubeMaterial);
+  var cubeGeometry = new THREE.CubeGeometry(100, 100, 100);
+  var cubeMaterial = new THREE.MeshLambertMaterial({
+    color: 0x1ec876
+  });
+  var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+  cube.rotation.y = Math.PI * 45 / 180;
   scene.add(cube);
+
+  var camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 10000);
   camera.position.y = 160;
   camera.position.z = 400;
   camera.lookAt(cube.position);
-  render(r, scene, camera);
+  scene.add(camera);
 
-  function render() {
+  var skyboxGeometry = new THREE.CubeGeometry(10000, 10000, 10000);
+  var skyboxMaterial = new THREE.MeshBasicMaterial({
+    color: 0x000000,
+    side: THREE.BackSide
+  });
+  var skybox = new THREE.Mesh(skyboxGeometry, skyboxMaterial);
+  scene.add(skybox);
+
+  var pointLight = new THREE.PointLight(0xFFFFFF);
+  pointLight.position.set(0, 300, 200);
+  scene.add(pointLight);
+
+
+  var clock = new THREE.Clock;
+  var render = function() {
     requestAnimationFrame(render);
-    cube.rotation.x += 0.01;
-    cube.rotation.y += 0.01;
-    r.render(scene, camera);
+    var delta = clock.getDelta();
+    // cube.rotation.y -= delta;
+    // cube.rotation.x += delta;
+    cube.rotation.z -= delta;
+  	renderer.render(scene, camera);
   }
+  render();
 })(THREE);
