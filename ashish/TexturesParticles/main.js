@@ -9,15 +9,37 @@
 
     var scene = new THREE.Scene();
 
+    // Make an array of materials
+    var cubeTexture = THREE.ImageUtils.loadTexture('./box.jpg'); // box.png
+    var materials = [];
+    materials.push(new THREE.MeshLambertMaterial({ map: cubeTexture, color: 0xff0000 })); // right face
+    materials.push(new THREE.MeshLambertMaterial({ map: cubeTexture, color: 0xffff00 })); // left face
+    materials.push(new THREE.MeshLambertMaterial({ map: cubeTexture, color: 0xffffff })); // top face
+    materials.push(new THREE.MeshLambertMaterial({ map: cubeTexture, color: 0x00ffff })); // bottom face
+    materials.push(new THREE.MeshLambertMaterial({ map: cubeTexture, color: 0x0000ff })); // front face
+    materials.push(new THREE.MeshLambertMaterial({ map: cubeTexture, color: 0xff00ff })); // back face
+    
     // Create the cube
     var cubeGeometry = new THREE.CubeGeometry(100, 100, 100);
-    var cubeMaterial = new THREE.MeshLambertMaterial({color:0x1ec876});
+
+
+    var cubeMaterial = new THREE.MeshFaceMaterial(materials);
     var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
 
     cube.rotation.y = Math.PI * 45 / 180; // convert to radians
     cube.rotation.x = Math.PI * 45 / 180;
     scene.add(cube);
 
+    // Make some particle effects
+    var particles = new THREE.Geometry;
+    for (var p = 0; p < 2000; p++) {
+        // randomly generate a particle
+       var particle = new THREE.Vector3(Math.random() * 500 - 250, Math.random() * 500 - 250, Math.random() * 500 - 250);
+       particles.vertices.push(particle);
+    }
+    var particleMaterial = new THREE.ParticleBasicMaterial({ color: 0xeeeeee, size: 5 });
+    var particleSystem = new THREE.ParticleSystem(particles, particleMaterial);
+    scene.add(particleSystem);
     // add the camera
     var camera = new THREE.PerspectiveCamera( 45, width / height, 0.1, 1000 );
     camera.position.y = 160;
@@ -46,6 +68,7 @@
         
         cube.rotation.y -= delta;
         cube.rotation.x -= delta;
+        particleSystem.rotation.y += delta;
         requestAnimationFrame(render); // callback render when next frame is ready
     }
     render();
