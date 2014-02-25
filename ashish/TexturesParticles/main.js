@@ -2,7 +2,7 @@
     'use strict';
     var width = window.innerWidth;
     var height = window.innerHeight;
-    var clock = new THREE.Clock;
+    var clock = new THREE.Clock();
     var renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(width,height);
     document.body.appendChild(renderer.domElement);
@@ -31,13 +31,14 @@
     scene.add(cube);
 
     // Make some particle effects
-    var particles = new THREE.Geometry;
+    var particles = new THREE.Geometry();
     for (var p = 0; p < 2000; p++) {
         // randomly generate a particle
        var particle = new THREE.Vector3(Math.random() * 500 - 250, Math.random() * 500 - 250, Math.random() * 500 - 250);
        particles.vertices.push(particle);
     }
-    var particleMaterial = new THREE.ParticleBasicMaterial({ color: 0xeeeeee, size: 5 });
+    var particleTexture = THREE.ImageUtils.loadTexture('./snowflake.png');
+    var particleMaterial = new THREE.ParticleBasicMaterial({ map: particleTexture, transparent: true, size: 5 });
     var particleSystem = new THREE.ParticleSystem(particles, particleMaterial);
     scene.add(particleSystem);
     // add the camera
