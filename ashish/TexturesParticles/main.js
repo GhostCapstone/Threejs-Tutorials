@@ -37,10 +37,27 @@
        var particle = new THREE.Vector3(Math.random() * 500 - 250, Math.random() * 500 - 250, Math.random() * 500 - 250);
        particles.vertices.push(particle);
     }
+
     var particleTexture = THREE.ImageUtils.loadTexture('./snowflake.png');
     var particleMaterial = new THREE.ParticleBasicMaterial({ map: particleTexture, transparent: true, size: 5 });
     var particleSystem = new THREE.ParticleSystem(particles, particleMaterial);
     scene.add(particleSystem);
+
+
+    // Add some smoke
+    var smokeParticles = new THREE.Geometry();
+    for (var i = 0; i < 300; i++) {
+        var smokeParticle = new THREE.Vector3(Math.random() * 32 - 16, Math.random() * 230, Math.random() * 32 - 16);
+        smokeParticles.vertices.push(smokeParticle);
+
+    }
+    var smokeTexture = THREE.ImageUtils.loadTexture('./smoke.png');
+    var smokeMaterial = new THREE.ParticleBasicMaterial({ map: smokeTexture, transparent: true, blending: THREE.AdditiveBlending, size: 50, color: 0x111111 });
+    var smoke = new THREE.ParticleSystem( smokeParticles, smokeMaterial);
+    smoke.sortParticles = true;
+    smoke.position.x = -150;
+
+    scene.add(smoke);
     // add the camera
     var camera = new THREE.PerspectiveCamera( 45, width / height, 0.1, 1000 );
     camera.position.y = 160;
@@ -70,6 +87,20 @@
         cube.rotation.y -= delta;
         cube.rotation.x -= delta;
         particleSystem.rotation.y += delta;
+
+        var particleCount = smokeParticles.vertices.length;
+        while (particleCount--) {
+            var p = smokeParticles.vertices[particleCount];
+            p.y += delta * 50;
+
+            if (p.y >= 230) {
+                p.y = Math.random() * 16;
+                p.x = Math.random() * 32 - 16;
+                p.z = Math.random() * 32 - 16;
+            }
+        }
+
+        smokeParticles.__dirtyVertices = true;
         requestAnimationFrame(render); // callback render when next frame is ready
     }
     render();
