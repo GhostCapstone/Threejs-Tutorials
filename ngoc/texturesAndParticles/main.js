@@ -39,15 +39,42 @@
   var pointLight = new THREE.PointLight(0xFFFFFF);
   pointLight.position.set(0, 300, 200);
   scene.add(pointLight);
+  console.log(pointLight);
 
-  var particles = new THREE.Geometry;
+  //  snowflakes
+  var snowParticles = new THREE.Geometry;
   for(var p = 0; p < 2000; p++){
     var particle = new THREE.Vector3(Math.random() * 500 - 250, Math.random() * 500 -250, Math.random() * 500 - 250);
-    particles.vertices.push(particle);
+    snowParticles.vertices.push(particle);
   }
-  var particleMaterial = new THREE.ParticleBasicMaterial({color: 0x00FF00, size: 2});
-  var particleSystem = new THREE.ParticleSystem(particles, particleMaterial);
-  scene.add(particleSystem);
+  var snowParticleTexture = new THREE.ImageUtils.loadTexture('./snowflake.png');
+  var snowParticleMaterial = new THREE.ParticleBasicMaterial({
+    map: snowParticleTexture, 
+    transparent: true, 
+    size:10,
+    blending: THREE.AdditiveBlending
+  });
+  var snowParticleSystem = new THREE.ParticleSystem(snowParticles, snowParticleMaterial);
+  scene.add(snowParticleSystem);
+
+  // smoke
+  var smokeParticles = new THREE.Geometry;
+  for(var i = 0; i < 300; i++){
+    var smokeParticle = new THREE.Vector3(Math.random() * 32 - 16, Math.random() * 230, Math.random() * 32 - 16);
+    smokeParticles.vertices.push(smokeParticle);
+  }
+  var smokeParticleTexture = new THREE.ImageUtils.loadTexture('./smoke.png');
+  var smokeParticleMaterial = new THREE.ParticleBasicMaterial({
+    map: smokeParticleTexture, 
+    transparent: true,
+    size: 50, 
+    blending: THREE.AdditiveBlending,
+    color: 0x111111
+  });
+  var smokeParticleSystem = new THREE.ParticleSystem(smokeParticles, smokeParticleMaterial);
+  smokeParticleSystem.sortParticles = true;
+  smokeParticleSystem.position.x = -150;
+  scene.add(smokeParticleSystem);
 
   var clock = new THREE.Clock;
   var render = function() {
@@ -57,7 +84,20 @@
     // cube.rotation.x -= delta;
     // cube.rotation.z -= delta;
 
-    particleSystem.rotation.y += delta;
+    var particleCount = smokeParticles.vertices.length;
+    while(particleCount--){
+      var p = smokeParticles.vertices[particleCount];
+      p.y += delta * 50;
+
+      if(p.y >= 230){
+        p.y = Math.random() * 16;
+        p.x = Math.random() * 32 -16;
+        p.z = Math.random() * 32 -16;
+      }
+    }
+    smokeParticles.__dirtyVertices = true;
+
+    snowParticleSystem.rotation.x += delta / 50;
   	renderer.render(scene, camera);
   }
   render();
