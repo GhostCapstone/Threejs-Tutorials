@@ -94,13 +94,33 @@
   //load model
   var pivot;
   var skinnedMesh;
+  var uniforms;
+
   loader.load('./model.js', function(geometry, materials){
     skinnedMesh = new THREE.SkinnedMesh(geometry, new THREE.MeshFaceMaterial(materials));
     skinnedMesh.position.y = 50;
     skinnedMesh.scale.set(15, 15, 15);
     scene.add(skinnedMesh);
 
-    var item = new THREE.Mesh(new THREE.CubeGeometry(100, 10, 10), new THREE.MeshBasicMaterial({color: 0xFF0000}));
+    // var uniforms = {
+    //   time: { type: "f", value: 0 },
+    //   resolution: { type: "v2", value: new THREE.Vector2 },
+    //   texture: { type: "t", value: THREE.ImageUtils.loadTexture('./box.jpg') }
+    // };
+
+    uniforms = { 
+      time: { type: "f", value: 0 }, 
+      resolution: { type: "v2", value: new THREE.Vector2()}
+    };
+
+    var itemMaterial = new THREE.ShaderMaterial({
+      uniforms: uniforms,
+      vertexShader: document.getElementById('cubeVertexShader').innerHTML,
+      fragmentShader: document.getElementById('cubeFragmentShader').innerHTML
+    });
+    var item = new THREE.Mesh(new THREE.CubeGeometry(100, 10, 10), itemMaterial);
+    // var item = new THREE.Mesh(new THREE.CubeGeometry(100, 10, 10), new THREE.MeshBasicMaterial({color: 0xFF0000}));
+    item.geometry.computeTangents();
     item.position.x = 50;
     pivot = new THREE.Object3D();
     pivot.scale.set(0.15, 0.15, 0.15);
@@ -131,6 +151,7 @@
     // setup
     requestAnimationFrame(render);
     var delta = clock.getDelta();
+    uniforms.time.value += delta * 10;
 
     // cube rotation
     cube.rotation.y -= delta;

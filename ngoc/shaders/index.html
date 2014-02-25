@@ -17,7 +17,7 @@
     void main() {
       vUv = uv;
       vec3 newPosition = position + normal * vec3(sin(time * 0.2) * 3.0);
-      gl_Position = projectionMatrix <i> modelViewMatrix </i> vec4(newPosition, 1.0);
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.0);
     }
 	</script>
 	<script id="cubeFragmentShader" type="x-shader/x-fragment">
@@ -32,7 +32,7 @@
       float blue = abs(sin(position.x * position.y + time / 3.0 ));
       gl_FragColor = vec4(red, green, blue, 1.0);
     }
-    </script>
+  </script>
 </head>
 <body>
 	<script src="https://rawgithub.com/mrdoob/three.js/master/build/three.js"></script>
