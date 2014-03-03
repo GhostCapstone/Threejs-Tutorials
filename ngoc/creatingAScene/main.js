@@ -1,12 +1,14 @@
 (function(THREE) {
   "use strict";
-
-  var scene = new THREE.Scene();
-  var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-
-  var renderer = new THREE.WebGLRenderer();
-  renderer.setSize(window.innerWidth, window.innerHeight);
+  var width = window.innerWidth;
+  var height = window.innerHeight;
+  
+  var renderer = new THREE.WebGLRenderer({antialias: true});
+  renderer.setSize(width, height);
   document.body.appendChild(renderer.domElement);
+
+  var scene = new THREE.Scene;
+  var camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
 
   var geometry = new THREE.CubeGeometry(1, 1, 1);
   var material = new THREE.MeshBasicMaterial({
