@@ -81,7 +81,7 @@
     scene.add(camera);
 
     // add controls
-    controls = new THREE.OrbitControls(camera, render.domElement);
+    var controls = new THREE.OrbitControls(camera, render.domElement);
 
     // add a skybox
     var skyboxGeometry = new THREE.CubeGeometry(10000, 10000, 10000);
