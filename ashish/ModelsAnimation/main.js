@@ -2,6 +2,7 @@
     'use strict';
     var width = window.innerWidth;
     var height = window.innerHeight;
+    var animation;
     var clock = new THREE.Clock();
     var renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(width,height);
@@ -29,6 +30,18 @@
     cube.rotation.y = Math.PI * 45 / 180; // convert to radians
     cube.rotation.x = Math.PI * 45 / 180;
     scene.add(cube);
+
+    // import a model
+    var loader = new THREE.JSONLoader();
+
+    loader.load('./model.js', function(geometry, materials) {
+        var skinnedMesh = new THREE.SkinnedMesh( geometry, new THREE.MeshFaceMaterial(materials));
+        skinnedMesh.position.y = 50;
+        skinnedMesh.scale.set(15, 15, 15);
+        scene.add(skinnedMesh);
+
+        animate(skinnedMesh);
+    });
 
     // Make some particle effects
     var particles = new THREE.Geometry();
