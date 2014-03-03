@@ -33,7 +33,7 @@
 
     // import a model
     var loader = new THREE.JSONLoader();
-
+/*
     loader.load('./model.js', function(geometry, materials) {
         var skinnedMesh = new THREE.SkinnedMesh( geometry, new THREE.MeshFaceMaterial(materials));
         skinnedMesh.position.y = 50;
@@ -42,6 +42,7 @@
 
         animate(skinnedMesh);
     });
+    */
 
     // Make some particle effects
     var particles = new THREE.Geometry();
@@ -79,6 +80,9 @@
 
     scene.add(camera);
 
+    // add controls
+    controls = new THREE.OrbitControls(camera, render.domElement);
+
     // add a skybox
     var skyboxGeometry = new THREE.CubeGeometry(10000, 10000, 10000);
     var skyboxMaterial = new THREE.MeshBasicMaterial({ color: 0x000000, side: THREE.BackSide } );
@@ -96,7 +100,7 @@
     function render() {
         var delta = clock.getDelta();
         renderer.render(scene, camera);
-        
+        controls.update();
         cube.rotation.y -= delta;
         cube.rotation.x -= delta;
         particleSystem.rotation.y += delta;
